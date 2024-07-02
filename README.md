@@ -11,3 +11,10 @@
 pip install Flask
 pip install gspread
 ```
+
+## イメージ
+- ブラウザの画像
+![完成イメージ](img/img1.png)
+
+- スプレッドシートの画像
+![完成イメージ](img/s1.png)
