@@ -14,7 +14,10 @@ pip install gspread
 
 ## イメージ
 - ブラウザの画像
-![完成イメージ](img/img1.png)
+![ブラウザイメージ](img/web.png)
+
+- obnizの画像
+![obnizイメージ](img/obniz.png)
 
 - スプレッドシートの画像
-![完成イメージ](img/s1.png)
+![スプレッドシートイメージ](img/sheet.png)
