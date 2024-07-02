@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="wrap centered-box">
+    <h1>温度検索アプリ</h1>
+
+    <h2>データ検索</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>日時</th>
+                <th>温度</th>
+                <th>フィードバック</th>
+            </tr>
+        </thead>
+        {% for i in data %}
+        <tr>
+            <th>{{ i[1] }}</th>
+            <th>{{ i[0] }}°</th>
+            <th>{{ i[2] }}</th>
+        </tr>
+        {% endfor %}
+    </table>
+    <div>
+        <form method="GET">
+            <button type="submit" name="temp" value="high">
+                30°以上のみ表示
+            </button>
+            <button type="submit" name="temp" value="low">
+                10°以下のみ表示
+            </button>
+            <button type="submit" name="temp" value="no">
+                リセット
+            </button>
+        </form>
+    </div>
+
+    <div style="height: 32px;"></div>
+
+    <h2>グラフ</h2>
+</div>
+
+<div style="width: 100%; overflow: scroll;">
+    <div style="width: fit-content;margin: 0 auto;">
+        <canvas id="tempChart" width="800" height="400"></canvas>
+    </div>
+</div>
+<script>
+    const temp_list = JSON.parse('{{ temp_list|safe }}');
+    const date_list = JSON.parse('{{ date_list|safe }}');
+
+    const temperatures = temp_list.map(temp => parseInt(temp));
+
+    const canvas = document.getElementById('tempChart');
+    const ctx = canvas.getContext('2d');
+
+    const chartWidth = canvas.width;
+    const chartHeight = canvas.height;
+    const padding = 50;
+    const graphWidth = chartWidth - padding * 2;
+    const graphHeight = chartHeight - padding * 2;
+
+    const maxTemp = 100;
+    const minTemp = -10;
+
+    function drawLineChart() {
+        ctx.clearRect(0, 0, chartWidth, chartHeight);
+
+        ctx.beginPath();
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, chartHeight - padding);
+        ctx.lineTo(chartWidth - padding, chartHeight - padding);
+        ctx.stroke();
+
+        const xStep = graphWidth / (temperatures.length - 1);
+        const yScale = graphHeight / (maxTemp - minTemp);
+
+        ctx.beginPath();
+        ctx.moveTo(padding, chartHeight - padding - (temperatures[0] - minTemp) * yScale);
+
+        for (let i = 1; i < temperatures.length; i++) {
+            const x = padding + i * xStep;
+            const y = chartHeight - padding - (temperatures[i] - minTemp) * yScale;
+            ctx.lineTo(x, y);
+        }
+
+        ctx.strokeStyle = 'rgb(45, 98, 196)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgb(45, 98, 196)';
+        for (let i = 0; i < temperatures.length; i++) {
+            const x = padding + i * xStep;
+            const y = chartHeight - padding - (temperatures[i] - minTemp) * yScale;
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2, true);
+            ctx.fill();
+        }
+    }
+
+    drawLineChart();
+</script>
+
+{% endblock %}
